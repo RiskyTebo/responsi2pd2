@@ -61,7 +61,7 @@ public class LoginForm extends javax.swing.JFrame {
 
         jLabel1.setFont(new java.awt.Font("AppleMyungjo", 1, 18)); // NOI18N
         jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel1.setText("PENCATATAN DAN PENGECEKANn JUDUL TUGAS AKHIR");
+        jLabel1.setText("PENCATATAN DAN PENGECEKAN JUDUL TUGAS AKHIR");
 
         btnLogin.setFont(new java.awt.Font("American Typewriter", 1, 18)); // NOI18N
         btnLogin.setForeground(new java.awt.Color(0, 153, 204));
