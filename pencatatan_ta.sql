@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Waktu pembuatan: 29 Nov 2018 pada 00.29
+-- Waktu pembuatan: 06 Des 2018 pada 00.36
 -- Versi server: 5.6.38
 -- Versi PHP: 7.2.1
 
@@ -24,8 +24,16 @@ CREATE TABLE `judul_ta` (
   `kode_ta` int(11) NOT NULL,
   `nama_ta` varchar(30) NOT NULL,
   `keterangan` text NOT NULL,
-  `metode` varchar(35) NOT NULL
+  `metode` varchar(35) NOT NULL,
+  `id_user` varchar(30) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Dumping data untuk tabel `judul_ta`
+--
+
+INSERT INTO `judul_ta` (`kode_ta`, `nama_ta`, `keterangan`, `metode`, `id_user`) VALUES
+(1, 'M', 'Applikasi ini Dapat Memancing Online', 'Metode Laskar Pelangi', 'risky');
 
 -- --------------------------------------------------------
 
@@ -49,7 +57,8 @@ CREATE TABLE `user` (
 
 INSERT INTO `user` (`username`, `password`, `nama_depan`, `nama_belakang`, `kuliah`, `alamat`, `jumlah_sks`) VALUES
 ('risky', 'risky', 'Risky', 'Feryansyah Pribadi', 'STIKI MALANG', 'Jln Gadang Gang 5c', 140),
-('shnsaraswati', 'shania', 'Shania', 'Sarawati', 'STIKI MALANG', 'JLN sem', 120);
+('shnsaraswati', 'shania', 'Shania', 'Sarawati', 'STIKI MALANG', 'JLN sem', 120),
+('teuku', 'teuku123', 'Teuku ', 'Rionaldi', 'STIKI MALANG', 'Jln Perusahaan		', 142);
 
 --
 -- Indexes for dumped tables
@@ -66,3 +75,13 @@ ALTER TABLE `judul_ta`
 --
 ALTER TABLE `user`
   ADD PRIMARY KEY (`username`);
+
+--
+-- AUTO_INCREMENT untuk tabel yang dibuang
+--
+
+--
+-- AUTO_INCREMENT untuk tabel `judul_ta`
+--
+ALTER TABLE `judul_ta`
+  MODIFY `kode_ta` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
