@@ -96,6 +96,11 @@ public class RegisterForm extends javax.swing.JFrame {
         btnLogin.setFont(new java.awt.Font("American Typewriter", 1, 18)); // NOI18N
         btnLogin.setForeground(new java.awt.Color(255, 0, 0));
         btnLogin.setText("LOGIN");
+        btnLogin.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnLoginActionPerformed(evt);
+            }
+        });
 
         btnRegister.setBackground(new java.awt.Color(255, 255, 255));
         btnRegister.setFont(new java.awt.Font("American Typewriter", 1, 18)); // NOI18N
@@ -225,6 +230,12 @@ public class RegisterForm extends javax.swing.JFrame {
             System.out.println("Error : " + e);
         }
     }//GEN-LAST:event_btnRegisterActionPerformed
+
+    private void btnLoginActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLoginActionPerformed
+        // TODO add your handling code here:
+        new LoginForm().setVisible(true);
+        this.setVisible(false);
+    }//GEN-LAST:event_btnLoginActionPerformed
 
     /**
      * @param args the command line arguments
