@@ -190,16 +190,30 @@ public class MainForm extends javax.swing.JFrame {
 
     private void jMenu1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jMenu1MouseClicked
         // TODO add your handling code here:
+        String query = "SELECT count(*) jumlah from judul_ta where id_user = '"+LoginForm.txtUsername.getText()+"'";
         int sks = Integer.parseInt(txtSks.getText());
-        if(sks < 140)
-        {
-            JOptionPane.showMessageDialog(null, "MAAF JUMLAH SKS ANDA KURANG DARI 140");
-            this.setVisible(true);
-        }
-        else
-        {
-            new CreateTugasAkhir().setVisible(true);
-            this.setVisible(false);
+        try {
+            Statement stmt = conn.createStatement();
+            ResultSet data = stmt.executeQuery(query);
+
+            if(data.next())
+            {
+                if(data.getInt("jumlah") > 0)
+                {
+                    JOptionPane.showMessageDialog(null, "ANDA TIDAK BOLEH MEMBUAT TUGAS AKHIR LAGI");
+                }
+                else if(sks < 140)
+                {
+                    JOptionPane.showMessageDialog(null, "MAAF JUMLAH SKS ANDA KURANG DARI 140");
+                    this.setVisible(true);
+                }
+                else
+                {
+                    new CreateTugasAkhir().setVisible(true);
+                    this.setVisible(false);
+                }
+            }
+        } catch (Exception e) {
         }
     }//GEN-LAST:event_jMenu1MouseClicked
 
