@@ -5,12 +5,18 @@
  */
 package main;
 
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 import javax.swing.JOptionPane;
-
+import java.util.Hashtable;
 import koneksi.connection;
 /**
  *
@@ -23,9 +29,75 @@ public class CreateTugasAkhir extends javax.swing.JFrame {
      */
     
     public Connection conn = new connection().connect();
+    public Hashtable<String, Integer> bidang = new Hashtable<>();
+    DateFormat formatDate = new SimpleDateFormat("dd/MM/yyyy");
+    Date date = new Date();
+    String now = formatDate.format(date);
+    
+    public void valueAbstrak()
+    {
+        String query = "SELECT * from bidang";
+        
+        try {
+            Statement stmt = conn.createStatement();
+            ResultSet data = stmt.executeQuery(query);
+            
+            while (data.next()) {                
+                comboboxAbstrak.addItem(data.getString("nama_bidang"));
+                bidang.put(data.getString("nama_bidang"), data.getInt("id_bidang"));
+            }
+        } catch (Exception e) {
+            System.out.println("Error get Value : " + e);
+        }
+    }
+    
+    public void findDosen() 
+    {
+        String query = "SELECT * from dosen where bidang="+bidang.get(comboboxAbstrak.getSelectedItem().toString())+"";
+        try {
+            Statement stmt = conn.createStatement();
+            ResultSet data = stmt.executeQuery(query);
+            if(data.next())
+            {
+                comboboxDosen.addItem(data.getString("nama"));
+            }
+        } catch (Exception e) {
+            System.out.println("Error : " + e);
+        }
+    }
+    
+    public void addedSeminarDay()
+    {
+        Calendar calSem1 = Calendar.getInstance();
+        calSem1.setTime(date);
+        calSem1.add(Calendar.DATE, 30);
+        String seminar1 = formatDate.format(calSem1.getTime());
+        Calendar calSem2 = Calendar.getInstance();
+        calSem2.setTime(date);
+        calSem2.add(Calendar.DATE, 60);
+        String seminar2 = formatDate.format(calSem2.getTime());
+        txtSeminar1.setText(seminar1);
+        txtSeminar2.setText(seminar2);
+    }
     
     public CreateTugasAkhir() {
         initComponents();
+        comboboxAbstrak.removeAllItems();
+        comboboxDosen.removeAllItems();
+        valueAbstrak();
+        findDosen();
+        txtTgl.setText(now);
+        addedSeminarDay();
+        comboboxAbstrak.addItemListener(new ItemListener() {
+            @Override
+            public void itemStateChanged(ItemEvent e) {
+                if(e.getStateChange()==ItemEvent.SELECTED)
+                {
+                    comboboxDosen.removeAllItems();
+                    findDosen();
+                }
+            }
+        });
     }
 
     /**
@@ -39,15 +111,22 @@ public class CreateTugasAkhir extends javax.swing.JFrame {
 
         jLabel4 = new javax.swing.JLabel();
         jTextField3 = new javax.swing.JTextField();
+        jSpinner1 = new javax.swing.JSpinner();
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
         txtTugasAkhir = new javax.swing.JTextField();
         jLabel3 = new javax.swing.JLabel();
-        txtKeterangan = new javax.swing.JTextField();
-        jLabel5 = new javax.swing.JLabel();
-        txtMetode = new javax.swing.JTextField();
         jButton1 = new javax.swing.JButton();
         btnTambah = new javax.swing.JButton();
+        comboboxAbstrak = new javax.swing.JComboBox<>();
+        jLabel5 = new javax.swing.JLabel();
+        comboboxDosen = new javax.swing.JComboBox<>();
+        jLabel6 = new javax.swing.JLabel();
+        txtTgl = new javax.swing.JTextField();
+        jLabel7 = new javax.swing.JLabel();
+        txtSeminar1 = new javax.swing.JTextField();
+        txtSeminar2 = new javax.swing.JTextField();
+        jLabel8 = new javax.swing.JLabel();
 
         jLabel4.setText("Keterangan");
 
@@ -64,11 +143,7 @@ public class CreateTugasAkhir extends javax.swing.JFrame {
 
         jLabel3.setFont(new java.awt.Font("AppleMyungjo", 0, 15)); // NOI18N
         jLabel3.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel3.setText("Keterangan");
-
-        jLabel5.setFont(new java.awt.Font("AppleMyungjo", 0, 15)); // NOI18N
-        jLabel5.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel5.setText("Metode");
+        jLabel3.setText("Abstrak");
 
         jButton1.setFont(new java.awt.Font("AppleMyungjo", 1, 18)); // NOI18N
         jButton1.setForeground(new java.awt.Color(255, 0, 51));
@@ -88,34 +163,92 @@ public class CreateTugasAkhir extends javax.swing.JFrame {
             }
         });
 
+        comboboxAbstrak.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        comboboxAbstrak.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                comboboxAbstrakMousePressed(evt);
+            }
+            public void mouseReleased(java.awt.event.MouseEvent evt) {
+                comboboxAbstrakMouseReleased(evt);
+            }
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                comboboxAbstrakMouseClicked(evt);
+            }
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                comboboxAbstrakMouseExited(evt);
+            }
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                comboboxAbstrakMouseEntered(evt);
+            }
+        });
+        comboboxAbstrak.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                comboboxAbstrakActionPerformed(evt);
+            }
+        });
+
+        jLabel5.setFont(new java.awt.Font("AppleMyungjo", 0, 13)); // NOI18N
+        jLabel5.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLabel5.setText("DOSEN PEMBIMBING");
+
+        comboboxDosen.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+
+        jLabel6.setFont(new java.awt.Font("AppleMyungjo", 0, 13)); // NOI18N
+        jLabel6.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLabel6.setText("Tanggal");
+
+        jLabel7.setFont(new java.awt.Font("AppleMyungjo", 0, 13)); // NOI18N
+        jLabel7.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLabel7.setText("Seminar 1");
+
+        jLabel8.setFont(new java.awt.Font("AppleMyungjo", 0, 13)); // NOI18N
+        jLabel8.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLabel8.setText("Seminar 2");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addGroup(layout.createSequentialGroup()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 145, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addContainerGap()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                            .addComponent(jLabel5, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(jLabel3, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 145, Short.MAX_VALUE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(txtMetode, javax.swing.GroupLayout.PREFERRED_SIZE, 190, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(comboboxAbstrak, javax.swing.GroupLayout.PREFERRED_SIZE, 190, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(comboboxDosen, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 145, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(txtKeterangan, javax.swing.GroupLayout.PREFERRED_SIZE, 190, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(layout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
                         .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 145, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(txtTugasAkhir, javax.swing.GroupLayout.PREFERRED_SIZE, 190, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addGap(0, 59, Short.MAX_VALUE))
+                        .addComponent(txtTugasAkhir, javax.swing.GroupLayout.PREFERRED_SIZE, 210, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGap(39, 39, 39)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 78, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(txtTgl, javax.swing.GroupLayout.PREFERRED_SIZE, 177, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jLabel7, javax.swing.GroupLayout.PREFERRED_SIZE, 78, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(txtSeminar1, javax.swing.GroupLayout.PREFERRED_SIZE, 177, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jLabel8, javax.swing.GroupLayout.PREFERRED_SIZE, 78, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(txtSeminar2, javax.swing.GroupLayout.PREFERRED_SIZE, 177, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGap(17, 17, 17))
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jButton1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addContainerGap())
+                .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 667, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(layout.createSequentialGroup()
                     .addContainerGap()
-                    .addComponent(btnTambah, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(btnTambah, javax.swing.GroupLayout.DEFAULT_SIZE, 672, Short.MAX_VALUE)
                     .addContainerGap()))
         );
         layout.setVerticalGroup(
@@ -125,21 +258,27 @@ public class CreateTugasAkhir extends javax.swing.JFrame {
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel2)
-                    .addComponent(txtTugasAkhir, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(txtTugasAkhir, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel6)
+                    .addComponent(txtTgl, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel3)
-                    .addComponent(txtKeterangan, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(comboboxAbstrak)
+                    .addComponent(jLabel7)
+                    .addComponent(txtSeminar1, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel5)
-                    .addComponent(txtMetode, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 78, Short.MAX_VALUE)
+                    .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(comboboxDosen, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel8)
+                    .addComponent(txtSeminar2, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(159, 159, 159)
                 .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 46, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(57, 57, 57))
             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                    .addContainerGap(239, Short.MAX_VALUE)
+                    .addContainerGap(323, Short.MAX_VALUE)
                     .addComponent(btnTambah, javax.swing.GroupLayout.PREFERRED_SIZE, 46, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGap(107, 107, 107)))
         );
@@ -155,32 +294,67 @@ public class CreateTugasAkhir extends javax.swing.JFrame {
 
     private void btnTambahActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnTambahActionPerformed
         // TODO add your handling code here:
-        String queryInsert = "INSERT INTO judul_ta(nama_ta, keterangan, metode, id_user) VALUES(?, ?, ?, ?)";
-        String querySelect = "SELECT * from judul_ta WHERE nama_ta = '"+ txtTugasAkhir.getText() +"'";
-        
-        try {
-            Statement stmt = conn.createStatement();
-            ResultSet hasil = stmt.executeQuery(querySelect);
-            
-            if(hasil.next())
-            {
-                JOptionPane.showMessageDialog(null, "MAAF JUDUL TUGAS AKHIR YANG ANDA BUAT SUDAH TERSEDIA!");
-            }
-            else
-            {
-                PreparedStatement statement = conn.prepareStatement(queryInsert);
-                statement.setString(1, txtTugasAkhir.getText());
-                statement.setString(2, txtKeterangan.getText());
-                statement.setString(3, txtMetode.getText());
-                statement.setString(4, LoginForm.txtUsername.getText());
+        if(txtTugasAkhir.getText().equals("") || comboboxAbstrak.getSelectedItem().toString().equals("") || comboboxDosen.getSelectedItem().toString().equals(""))
+        {
+            JOptionPane.showMessageDialog(null, "ISI SEMUA DATA TANPA TERKECUALI KARENA KALAU KOSONG ITU MENYAKITKAN HEHE");
+        }
+        else
+        {
+            String queryInsert = "INSERT INTO judul_ta(nama_ta, abstrak, dosen_pembimbing, tgl_pengambilan, tgl_seminar1, tgl_seminar2, id_user) VALUES(?, ?, ?, ?, ?, ?, ?)";
+            String querySelect = "SELECT * from judul_ta WHERE nama_ta = '"+ txtTugasAkhir.getText() +"'";
 
-                statement.executeUpdate();
-                JOptionPane.showMessageDialog(null, "Tugas Akhir Anda Telah Berhasil Dibuat!");
+            try {
+                Statement stmt = conn.createStatement();
+                ResultSet hasil = stmt.executeQuery(querySelect);
+
+                if(hasil.next())
+                {
+                    JOptionPane.showMessageDialog(null, "MAAF JUDUL TUGAS AKHIR YANG ANDA BUAT SUDAH TERSEDIA!");
+                }
+                else
+                {
+                    PreparedStatement statement = conn.prepareStatement(queryInsert);
+                    statement.setString(1, txtTugasAkhir.getText());
+                    statement.setString(2, comboboxAbstrak.getSelectedItem().toString());
+                    statement.setString(3, comboboxDosen.getSelectedItem().toString());
+                    statement.setString(4, txtTgl.getText());
+                    statement.setString(5, txtSeminar1.getText());
+                    statement.setString(6, txtSeminar2.getText());
+                    statement.setString(7, LoginForm.txtUsername.getText());
+
+                    statement.executeUpdate();
+                    JOptionPane.showMessageDialog(null, "Tugas Akhir Anda Telah Berhasil Dibuat!");
+                }
+
+            } catch (Exception e) {
             }
-            
-        } catch (Exception e) {
         }
     }//GEN-LAST:event_btnTambahActionPerformed
+
+    private void comboboxAbstrakActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_comboboxAbstrakActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_comboboxAbstrakActionPerformed
+
+    private void comboboxAbstrakMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_comboboxAbstrakMouseClicked
+        
+    }//GEN-LAST:event_comboboxAbstrakMouseClicked
+
+    private void comboboxAbstrakMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_comboboxAbstrakMousePressed
+        // TODO add your handling code here:
+//        System.out.println(comboboxAbstrak.getSelectedItem().toString());
+    }//GEN-LAST:event_comboboxAbstrakMousePressed
+
+    private void comboboxAbstrakMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_comboboxAbstrakMouseReleased
+        // TODO add your handling code here:
+    }//GEN-LAST:event_comboboxAbstrakMouseReleased
+
+    private void comboboxAbstrakMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_comboboxAbstrakMouseEntered
+        // TODO add your handling code here:
+    }//GEN-LAST:event_comboboxAbstrakMouseEntered
+
+    private void comboboxAbstrakMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_comboboxAbstrakMouseExited
+        // TODO add your handling code here:
+    }//GEN-LAST:event_comboboxAbstrakMouseExited
 
     /**
      * @param args the command line arguments
@@ -220,15 +394,22 @@ public class CreateTugasAkhir extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnTambah;
+    private javax.swing.JComboBox<String> comboboxAbstrak;
+    private javax.swing.JComboBox<String> comboboxDosen;
     private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
+    private javax.swing.JLabel jLabel6;
+    private javax.swing.JLabel jLabel7;
+    private javax.swing.JLabel jLabel8;
+    private javax.swing.JSpinner jSpinner1;
     private javax.swing.JTextField jTextField3;
-    private javax.swing.JTextField txtKeterangan;
-    private javax.swing.JTextField txtMetode;
+    private javax.swing.JTextField txtSeminar1;
+    private javax.swing.JTextField txtSeminar2;
+    private javax.swing.JTextField txtTgl;
     private javax.swing.JTextField txtTugasAkhir;
     // End of variables declaration//GEN-END:variables
 }
