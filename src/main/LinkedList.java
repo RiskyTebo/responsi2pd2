@@ -15,11 +15,12 @@ public class LinkedList {
     public static String nama_tugasAkhir;
     public static String keterangan_tugasAkhir;
     public static String metode_tugasAkhir;
+    public static String status_tugasAkhir;
     
-    public void PushData(String new_namaTugas, String new_keterangan, String new_Metode)
+    public void PushData(String new_namaTugas, String new_keterangan, String new_Metode, String new_Status)
     {
         Node old = last;
-        last = new Node(new_namaTugas, new_keterangan, new_Metode);
+        last = new Node(new_namaTugas, new_keterangan, new_Metode, new_Status);
         
         if(first == null)
         {
@@ -43,6 +44,7 @@ public class LinkedList {
               DetailTugasAkhir.labelTugasakhir.setText(current.nama_tugas);
               DetailTugasAkhir.labelKeterangan.setText(current.keterangan);
               DetailTugasAkhir.labelMetode.setText(current.metode);
+              DetailTugasAkhir.labelMetode1.setText(current.status);
               System.out.println(current.nama_tugas);
               System.out.println(current.keterangan);
             

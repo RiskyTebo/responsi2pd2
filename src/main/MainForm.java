@@ -14,6 +14,7 @@ import java.sql.Statement;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import javax.swing.JOptionPane;
+import Metode.Stack;
 
 /**
  *
@@ -22,6 +23,7 @@ import javax.swing.JOptionPane;
 public class MainForm extends javax.swing.JFrame {
 
     public Connection conn = new connection().connect();
+    Stack s = new Stack();
     
     /**
      * Creates new form MainForm
@@ -47,9 +49,11 @@ public class MainForm extends javax.swing.JFrame {
     
     public MainForm() {
         initComponents();
-        txtNama.setText(getData("nama_depan"));
-        txtKuliah.setText(getData("kuliah"));
-        txtSks.setText(getData("jumlah_sks"));
+        s.stackPush(getData("nama_depan"), getData("jumlah_sks"), getData("kuliah"));
+        s.tampilkanStack();
+        txtNama.setText(Metode.Stack.nama);
+        txtKuliah.setText(Metode.Stack.kuliah);
+        txtSks.setText(Metode.Stack.sks);
     }
 
     /**
